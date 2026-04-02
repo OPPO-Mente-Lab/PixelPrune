@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.cursor/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs & checkpoints
+logs/
+*.log
+wandb/
+runs/
+checkpoints/
+
+# Model weights (too large for git)
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+
+# Data (top-level only)
+/data/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Secrets
+.env
+*.secret

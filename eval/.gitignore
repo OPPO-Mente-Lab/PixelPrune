@@ -1,0 +1,6 @@
+LMUData/
+LMUData-jpg/
+outputs/
+__pycache__/
+*.pyc
+temp/

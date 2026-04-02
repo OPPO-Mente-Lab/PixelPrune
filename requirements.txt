@@ -1,0 +1,5 @@
+# Core dependencies
+torch>=2.1.0
+transformers>=4.45.0
+Pillow>=10.0.0
+numpy>=1.24.0
