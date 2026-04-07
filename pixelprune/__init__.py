@@ -40,60 +40,30 @@ from .core import (
     merged_indices_to_patch_indices,
 )
 
-# --- 底层去重算法 ---
-from .dedup import (
-    deduplicate,
-    deduplicate_consecutive,
-    deduplicate_consecutive_exact,
-    deduplicate_consecutive_mse,
-    deduplicate_consecutive_max_error,
-    deduplicate_packed_sequences,
-    restore_packed_sequences,
-)
-
-# --- 方法注册表 ---
+# --- 方法注册表（供扩展自定义方法） ---
 from .methods import (
     BasePatchSelector,
     register_method,
-    get_selector,
-    list_methods,
-    RasterSelector,
-    SerpentineSelector,
-    Pred2DSelector,
-    RandomSelector,
-    ConnCompSelector,
 )
 
 
 __version__ = "1.0.0"
 
 __all__ = [
-    # 核心 API
     "compute_merged_keep_indices",
     "merged_indices_to_patch_indices",
     "apply_pixelprune",
-    # 方法注册表
     "BasePatchSelector",
     "register_method",
-    "get_selector",
-    "list_methods",
-    "RasterSelector",
-    "SerpentineSelector",
-    "Pred2DSelector",
-    "RandomSelector",
-    "ConnCompSelector",
-    # 底层去重
-    "deduplicate",
-    "deduplicate_consecutive",
-    "deduplicate_consecutive_exact",
-    "deduplicate_consecutive_mse",
-    "deduplicate_consecutive_max_error",
-    "deduplicate_packed_sequences",
-    "restore_packed_sequences",
 ]
 
 
-def apply_pixelprune(model: str = "qwen3_vl") -> None:
-    """对 Qwen3-VL / Qwen3.5 应用 monkey-patch。需在加载模型前调用。"""
+def apply_pixelprune(model: str = "qwen3_vl", backend: str = "hf") -> None:
+    """对 Qwen3-VL / Qwen3.5 应用 monkey-patch。需在加载模型前调用。
+
+    Args:
+        model: 模型架构，'qwen3_vl' 或 'qwen3_5'。
+        backend: 推理后端，'hf' 为 HuggingFace，'vllm' 为 vLLM。
+    """
     from .patches import apply_patches as _apply
-    _apply(model=model)
+    _apply(model=model, backend=backend)

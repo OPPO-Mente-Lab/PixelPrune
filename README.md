@@ -20,23 +20,24 @@ git clone https://github.com/OPPO-Mente-Lab/PixelPrune.git
 cd PixelPrune
 pip install -e .
 ```
-
-Tested with `transformers==4.57.6` and `torch==2.8.0`.
-
+Tested with `transformers==4.57.6` and `vllm==0.18.0`. Qwen3.5 + HuggingFace requires `transformers>=5.2.0`.
 
 ## Quick Start
+
+### HuggingFace
 
 ```python
 import os
 os.environ["PIXELPRUNE_ENABLED"] = "true"
 
 from pixelprune import apply_pixelprune
-apply_pixelprune(model="qwen3_vl")  # call BEFORE loading the model
+apply_pixelprune(model="qwen3_vl")  # or "qwen3_5" for Qwen3.5
+# call BEFORE loading the model
 
-from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
+from transformers import AutoModelForImageTextToText, AutoProcessor
 
-model_name = "Qwen/Qwen3-VL-2B-Instruct"
-model = Qwen3VLForConditionalGeneration.from_pretrained(
+model_name = "Qwen/Qwen3-VL-2B-Instruct"  # or Qwen3.5 model path
+model = AutoModelForImageTextToText.from_pretrained(
     model_name, dtype="auto", device_map="auto"
 )
 processor = AutoProcessor.from_pretrained(model_name)
@@ -64,13 +65,45 @@ generated_ids_trimmed = [
 print(processor.batch_decode(generated_ids_trimmed, skip_special_tokens=True)[0])
 ```
 
-PixelPrune is controlled via environment variables:
+### vLLM
+
+```python
+import os
+os.environ["PIXELPRUNE_ENABLED"] = "true"
+
+from pixelprune import apply_pixelprune
+apply_pixelprune(model="qwen3_vl", backend="vllm")  # or "qwen3_5" for Qwen3.5
+# call BEFORE creating LLM
+
+from PIL import Image
+from transformers import AutoProcessor
+from vllm import LLM, SamplingParams
+
+if __name__ == "__main__":
+    model_name = "Qwen/Qwen3-VL-2B-Instruct"  # or Qwen3.5 model path
+    processor = AutoProcessor.from_pretrained(model_name)
+    image = Image.open("assets/doc.jpg").convert("RGB")
+
+    messages = [{"role": "user", "content": [
+        {"type": "image"},
+        {"type": "text", "text": "Parse this table into Markdown format."},
+    ]}]
+    prompt = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+
+    llm = LLM(model=model_name, max_model_len=4096)
+    outputs = llm.generate(
+        {"prompt": prompt, "multi_modal_data": {"image": image}},
+        sampling_params=SamplingParams(max_tokens=1024, temperature=0.0),
+    )
+    print(outputs[0].outputs[0].text)
+```
+
+Currently supports **Qwen3-VL** and **Qwen3.5** on both HuggingFace and vLLM backends (see examples above). PixelPrune is controlled via environment variables:
 
 | Variable | Default | Description |
 |:---------|:--------|:------------|
 | `PIXELPRUNE_ENABLED` | `false` | Enable/disable PixelPrune |
-| `PIXELPRUNE_METRIC` | `max` | Distance metric (`exact` \| `mae` \| `rmse` \| `max`) |
-| `PIXELPRUNE_THRESHOLD` | `0` | Threshold τ |
+| `PIXELPRUNE_THRESHOLD` | `0` | Similarity threshold τ for deduplication with max error |
 | `PIXELPRUNE_VERBOSE` | `false` | Print per-image pruning stats (tokens kept, compression ratio, latency) |
 
 ## Evaluation
