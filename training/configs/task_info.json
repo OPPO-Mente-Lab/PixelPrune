@@ -1,0 +1,11 @@
+{
+    "gui": {
+        "dataset": {
+            "file_pattern": [
+                "/mnt/data/group/wangnan/vlm_data/Jedi/dataset-inner-abspath-rel/**/*/*.jsonl"
+            ]
+        },
+        "num_workers": 8,
+        "task_type": "MultiTurn"
+    }
+}

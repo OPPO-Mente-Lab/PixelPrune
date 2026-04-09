@@ -1,0 +1,17 @@
+{
+    "random_seed": 42,
+    "log_step": 1,
+    "save_interval": 200,
+    "save_dir": "./logs",
+    "save_format": "hf",
+    "model_path": "/mnt/data/group/models/Qwen3-VL-2B-Instruct",
+    "freeze_llm": false,
+    "freeze_vit": false,
+    "max_length": 8192,
+    "max_size": 2048,
+    "packing": true,
+    "kd_config": {
+        "alpha": 0,
+        "temperature": 1.0
+    }
+}
