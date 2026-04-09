@@ -41,8 +41,6 @@ Or with inline absolute image paths:
 
 Configure data paths in `task_info.json` and sampling weights in `task_weight.json`.
 
-> Loss is only computed on assistant response tokens. Multiple samples are packed into sequences of `max_length` via varlen flash attention.
-
 ## Key Config Options (`training_config.json`)
 
 | Option | Description |
