@@ -1,0 +1,29 @@
+# PixelPrune Training Dependencies
+
+# Core
+torch
+transformers
+deepspeed
+accelerate
+safetensors
+
+# Flash Attention (varlen packing)
+flash-attn
+
+# Flash Linear Attention (Qwen3.5 GatedDeltaNet)
+flash-linear-attention
+
+# Fused kernels
+liger-kernel
+
+# Data processing
+qwen-vl-utils
+Pillow
+numpy
+torchvision
+
+# Logging
+tensorboard
+
+# Misc
+einops

@@ -147,7 +147,35 @@ bash scripts/eval_doc.sh Qwen/Qwen3-VL-2B-Instruct "DocVQA_VAL OCRBench"
 
 ## Training
 
-Training code is coming soon.
+See [`training/README.md`](training/README.md) for details. Supports both CE and self-distillation (KD) training for Qwen3-VL and Qwen3.5.
+
+```bash
+cd training
+pip install -r requirements.txt
+
+export PIXELPRUNE_ENABLED=true
+export PIXELPRUNE_THRESHOLD=0.0
+
+deepspeed --num_gpus 8 train.py \
+    --deepspeed_config_path    configs/deepspeed_config.json \
+    --training_config_path     configs/training_config.json \
+    --task_info_config_path    configs/task_info.json \
+    --task_weight_config_path  configs/task_weight.json
+```
+
+## Citation
+
+```bibtex
+@misc{wang2026pixelprunepixelleveladaptivevisual,
+      title={PixelPrune: Pixel-Level Adaptive Visual Token Reduction via Predictive Coding}, 
+      author={Nan Wang and Zhiwei Jin and Chen Chen and Haonan Lu},
+      year={2026},
+      eprint={2604.00886},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2604.00886}, 
+}
+```
 
 ## Acknowledgements
 
