@@ -39,16 +39,52 @@ Or with inline absolute image paths:
 {"conversations": [{"from": "human", "value": "<img>/path/to/image.jpg</img>\nDescribe this image."}, {"from": "gpt", "value": "A photo of..."}]}
 ```
 
-Configure data paths in `task_info.json` and sampling weights in `task_weight.json`.
+## Config Files
 
-## Key Config Options (`training_config.json`)
+### `training_config.json`
 
 | Option | Description |
 |--------|-------------|
 | `model_path` | Path to Qwen3-VL or Qwen3.5 model |
+| `freeze_llm` / `freeze_vit` | Freeze LLM or ViT backbone |
 | `max_length` | Max packed sequence length |
 | `max_size` | Max image size (max_pixels capped at max_size²) |
+| `save_interval` | Save checkpoint every N updates |
 | `kd_config.alpha` | KD weight (>0 enables KD; self-distillation if `ref_model_path` unset) |
+
+### `deepspeed_config.json`
+
+| Option | Description |
+|--------|-------------|
+| `train_micro_batch_size_per_gpu` | Micro batch size per GPU |
+| `gradient_accumulation_steps` | Number of gradient accumulation steps |
+| `optimizer` | Optimizer type and params (lr, betas, weight_decay) |
+| `scheduler` | LR scheduler (WarmupCosineLR with total_num_steps) |
+| `zero_optimization.stage` | DeepSpeed ZeRO stage (default: 2) |
+
+### `task_info.json`
+
+Defines data sources. Each task has a `file_pattern` (glob for JSONL files) and `num_workers`:
+
+```json
+{
+    "my_task": {
+        "dataset": { "file_pattern": ["/path/to/data/*.jsonl"] },
+        "num_workers": 4,
+        "task_type": "MultiTurn"
+    }
+}
+```
+
+### `task_weight.json`
+
+Sampling weights for each task (normalized automatically):
+
+```json
+{
+    "my_task": 1
+}
+```
 
 ## Training Optimizations
 
